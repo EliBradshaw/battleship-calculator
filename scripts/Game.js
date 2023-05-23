@@ -5,7 +5,7 @@ export default class Game {
     static SIDE_WEIGHT = 100;
     static EXISTS = 0.1;
     static SHIP_SPACE = true;
-    static HIT_FALLOFF = 0.1;
+    static HIT_FALLOFF = 0.05;
     static board = [];
     static totalShipProbs = [];
     static probs = [];
@@ -44,12 +44,12 @@ export default class Game {
             if (x < 0 || x >= Game.size.x || y < 0 || y >= Game.size.y)
                 break;
             if (Game.get(x, y) == LaunchType.HIT)
-                hit += Game.HIT_FALLOFF;
+                hit += Game.HIT_FALLOFF * length;
             if (Game.get(x, y) == LaunchType.MISS)
                 break;
         }
         if (hit > 1)
-            return hit-1;
+            return Game.EXISTS + hit - 1;
         if (length == 0)
             return Game.EXISTS;
         return 0;
@@ -117,7 +117,6 @@ export default class Game {
         for (let i in Game.ships) {
             if (Game.totalShipProbs[i] == 0)
                 continue;
-                // git commit -m "Fixed probability"
             CVK.add(Game.probs[x][y][i] / Game.totalShipProbs[i]);
         }
         return CVK.compile();

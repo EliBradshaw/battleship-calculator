@@ -28,6 +28,7 @@ button {
     flex-flow: row wrap;
     width: calc(var(--size) * calc(var(--ratio) + 0.2vw));
     height: calc(var(--size) * calc(var(--ratio) + 0.1vw));
+    margin-bottom: 10px;
 }
 
 .cell {
