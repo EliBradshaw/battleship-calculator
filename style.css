@@ -26,8 +26,8 @@ button {
 #board {
     display: flex;
     flex-flow: row wrap;
-    width: calc(var(--size) * calc(var(--ratio) + 2px));
-    height: calc(var(--size) * calc(var(--ratio) + 2px));
+    width: calc(var(--size) * calc(var(--ratio) + 0.2vw));
+    height: calc(var(--size) * calc(var(--ratio) + 0.1vw));
 }
 
 .cell {
@@ -37,7 +37,7 @@ button {
     font-size: calc(0.4 * var(--ratio));
     width: var(--ratio);
     height: var(--ratio);
-    border: 1px solid black;
+    border: 0.1vw solid black;
     color: rgb(0, 165, 0);
     user-select: none;
 }

@@ -45,6 +45,7 @@ function explore(x, y, dx, dy, f = false) {
 
 GUI.hookChild('div', {}, board => {
     board.id = "board";
+    Game.calcProbs();
     for (let i in Game.board) {
         for (let j in Game.board[i]) {
             let d = document.createElement('div');
@@ -56,7 +57,7 @@ GUI.hookChild('div', {}, board => {
                 Game.board[i][j] %= LaunchType.COUNT;
                 GUI.draw();
             });
-            let prob = Game.calcProb(j, i);
+            let prob = Game.getProb(j, i);
             d.innerHTML = Math.round(prob * 10000) / 100;
             switch (Game.board[i][j]) {
                 case LaunchType.MISS:
@@ -128,19 +129,23 @@ GUI.hookChild('div', {}, div => div.innerText = "Board Size: ");
 
 GUI.hookChild('input', {
         'change': e => {
-            Game.size = new Vector(Number(e.target.value), Number(e.target.value));
-            document.documentElement.style.setProperty('--size', e.target.value);
+            let sid = Math.min(Math.max(Number(e.target.value), 1), 25)
+            Game.size = new Vector(sid, sid);
+            document.documentElement.style.setProperty('--size', sid);
             Game.init();
             GUI.draw();
         }
     }, 
+    // Write a comment telling vscode that side is of type HTML input
+    /** @type {(side: HTMLInputElement) => void} */
     side => {
         side.type = "number";
         side.style.width = "40px";
+
         side.value = Game.size.x;
         side.step = 1;
         side.min = 1;
-        side.max = 50;
+        side.max = 25;
     }
 )
 
@@ -163,6 +168,8 @@ GUI.hookChild('button', {
                                     return !(found = (a == v+1));
                                 return true;
                             });
+                            if (Game.ships.length == 0)
+                                Game.ships = [1];
                         }
                         GUI.draw();
                         return;

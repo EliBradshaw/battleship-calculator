@@ -3,10 +3,12 @@ import Vector from "./Vector.js";
 
 export default class Game {
     static SIDE_WEIGHT = 100;
-    static HIT_WEIGHT = 3;
-    static HIT_FALLOFF = 0.5;
+    static EXISTS = 0.1;
     static SHIP_SPACE = true;
+    static HIT_FALLOFF = 0.1;
     static board = [];
+    static totalShipProbs = [];
+    static probs = [];
     static ships = "54332".split("").map(Number);
     static size = new Vector(10, 10);
     static resetBoard() {
@@ -47,10 +49,10 @@ export default class Game {
                 break;
         }
         if (hit > 1)
-            return og*Game.HIT_WEIGHT*hit;
+            return hit-1;
         if (length == 0)
-            return og;
-        return 0.1/length;
+            return Game.EXISTS;
+        return 0;
     }
 
     static allShips(x, y, length) {
@@ -59,10 +61,33 @@ export default class Game {
         total += Game.shipRay(x, y, 1, 0, length);
         total += Game.shipRay(x, y, 0, -1, length);
         total += Game.shipRay(x, y, -1, 0, length);
-        return total / (length * 4 * Game.HIT_WEIGHT * (1+(length-1)*Game.HIT_FALLOFF));
+        return total;
     }
 
-    static calcProb(x, y) {
+    static calcProbs() {
+        Game.totalShipProbs = new Array(Game.ships.length);
+        Game.totalShipProbs.fill(0);
+        Game.probs = new Array(Game.size.x);
+        for (let i = 0; i < Game.size.y; i++) {
+            let arr = new Array(Game.size.y);
+            for (let j = 0; j < Game.size.x; j++) {
+                arr[j] = new Array(Game.ships.length);
+                arr[j].fill(0);
+            }
+            Game.probs[i] = arr;
+        }
+
+        for (let i = 0; i < Game.size.y; i++) {
+            for (let j = 0; j < Game.size.x; j++) {
+                Game.calcProb(i, j);
+            }
+        }
+
+        console.log(Game.probs);
+    }
+    
+
+    static getProb(x, y) {
         [x, y] = [x, y].map(Number);
         let CVK = {
             values: [],
@@ -88,9 +113,20 @@ export default class Game {
         if (y >(Game.size.y/2 - 1))
             dy = y - Game.size.y/2;
         let distCorner = new Vector(dx, dy).length() / new Vector(4, 4).length();
-        CVK.add(distCorner, (Game.ships.length / 10) * Game.SIDE_WEIGHT / 300);
-        for (let ship of Game.ships)
-            CVK.add(Game.allShips(x, y, ship));
+        CVK.add(distCorner, (Game.ships.length / 10) * Game.SIDE_WEIGHT / 2500);
+        for (let i in Game.ships) {
+            if (Game.totalShipProbs[i] == 0)
+                continue;
+                // git commit -m "Fixed probability"
+            CVK.add(Game.probs[x][y][i] / Game.totalShipProbs[i]);
+        }
         return CVK.compile();
+    }
+
+    static calcProb(x, y) {
+        for (let i in Game.ships) {
+            Game.totalShipProbs[i] += 
+            Game.probs[x][y][i] = Game.allShips(x, y, Game.ships[i]);
+        }
     }
 }
