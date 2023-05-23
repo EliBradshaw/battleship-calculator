@@ -1,0 +1,43 @@
+:root {
+    --size: 10;
+    --ratio: calc(calc(min(90vw / var(--size), 70vh / var(--size))) * 1);
+}
+
+#canvas {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column nowrap;
+}
+
+input {
+    text-align: center;
+}
+
+button {
+    width: 120px;
+}
+
+#board {
+    display: flex;
+    flex-flow: row wrap;
+    width: calc(var(--size) * calc(var(--ratio) + 2px));
+    height: calc(var(--size) * calc(var(--ratio) + 2px));
+}
+
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(0.4 * var(--ratio));
+    width: var(--ratio);
+    height: var(--ratio);
+    border: 1px solid black;
+    color: rgb(0, 165, 0);
+    user-select: none;
+}
