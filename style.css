@@ -13,6 +13,11 @@
     justify-content: center;
     align-items: center;
     flex-flow: column nowrap;
+    overflow-y: scroll;
+}
+
+body {
+    position: unset;
 }
 
 input {
@@ -24,6 +29,7 @@ button {
 }
 
 #board {
+    margin-top: 120px;
     display: flex;
     flex-flow: row wrap;
     width: calc(var(--size) * calc(var(--ratio) + 0.2vw));
